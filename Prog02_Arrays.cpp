@@ -40,7 +40,7 @@ int main( int argc , char* argv[] )
 		cout << " -- array2[" << i << "]: " << &array2[i] << "\n";
 	}
 	cout << "==================================================\n";
-	printf("The content of the arrays is:\n");
+	cout << "The content of the arrays are:\n";
 	for (int i = 0; i < numRen; i++)
 	{
 		cout << i + 1 << ") array1[" << i << "]: " << array1[i];
