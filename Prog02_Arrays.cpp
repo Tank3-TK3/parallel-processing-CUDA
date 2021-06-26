@@ -1,10 +1,8 @@
 //////////////////////////////////////////////////
 //              Program 02 Arrays               //
 //////////////////////////////////////////////////
-#include "stdio.h"
-#include <cstdlib>
-#include <time.h>
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 
@@ -41,27 +39,29 @@ int main( int argc , char* argv[] )
 	}
 	cout << "==================================================\n";
 	cout << "The content of the arrays are:\n";
-	for (int i = 0; i < numRen; i++)
+	for ( int i = 0 ; i < numRen ; ++i )
 	{
 		cout << i + 1 << ") array1[" << i << "]: " << array1[i];
 		cout << " -- array2[" << i << "]: " << array2[i] << "\n";
 	}
 	cout << "==================================================\n";
-	printf("El contenido de los vectores usando indice es:\n");
-	for (int i = 0; i < numRen; i++) {
+	cout << "The content of the arrays using index are:\n";
+	for ( int i = 0 ; i < numRen ; ++i )
+	{
 		array1[i] = array1[i] + 100;
 		array2[i] = array2[i] + 100;
-		printf("%d) array1[%d]: %10.5f   --   array2[%d]: %10.5f\n",
-			i + 1, i, array1[i], i, array2[i]);
+		cout << i + 1 << ") array1[" << i << "]: " << array1[i];
+		cout << " -- array2[" << i << "]: " << array2[i] << "\n";
 	}
 	cout << "==================================================\n";
-	printf("El contenido de los vectores usando apuntador es:\n");
-	for (int i = 0; i < numRen; i++) {
-		*(array1 + i) = *(array1 + i) + 20;
-		*(array1Ptr + i) = *(array1Ptr + i) + 20;
-		*(array2 + i) = *(array2 + i) + 20;
-		printf("%d) array1[%d]: %10.5f   --   array2[%d]: %10.5f\n",
-			i + 1, i, array1[i], i, array2[i]);
+	cout << "The content of the arrays using pointers are:\n";
+	for ( int i = 0 ; i < numRen ; ++i ) 
+	{
+		*( array1 + i ) = *( array1 + i ) + 20;
+		*( array1Ptr + i ) = *( array1Ptr + i ) + 20;
+		*( array2 + i ) = *( array2 + i ) + 20;
+		cout << i + 1 << ") array1[" << i << "]: " << array1[i];
+		cout << " -- array2[" << i << "]: " << array2[i] << "\n";
 	}
 	cout << "==================================================\n";
     free( array2 );
