@@ -1,2 +1,1 @@
-# parallel-processing-CUDA
-Parallel processing with CUDA C / C++
+# Parallel processing with CUDA C / C++
