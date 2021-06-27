@@ -17,8 +17,9 @@ int main( int argc , char* argv[] )
 	array1Ptr = &array1[0];
 	array2 = ( float * ) malloc( numRen * sizeof( float ) );
 	srand( ( unsigned ) time( NULL ) );
-	for ( int i = 0 ; i < numRen ; i++ )
-	{
+
+	for( int i = 0 ; i < numRen ; i++ )
+    {
 		array1[i] = ( ( float ) rand() / ( float ) RAND_MAX ) * 100;
 		array2[i] = ( ( float ) rand() / ( float ) RAND_MAX ) * 100;
 	}
@@ -39,8 +40,9 @@ int main( int argc , char* argv[] )
 	cout << "==================================================\n";
 
 	cout << "The memory addresses of the elements of the arrays are:\n";
-	for ( int i = 0 ; i < numRen ; ++i )
-	{
+
+	for( int i = 0 ; i < numRen ; ++i )
+    {
 		cout << i + 1 << ") array1[" << i << "]: " << &array1[i];
 		cout << " -- array2[" << i << "]: " << &array2[i] << "\n";
 	}
@@ -48,7 +50,8 @@ int main( int argc , char* argv[] )
 	cout << "==================================================\n";
 
 	cout << "The content of the arrays are:\n";
-	for ( int i = 0 ; i < numRen ; ++i )
+
+	for( int i = 0 ; i < numRen ; ++i )
 	{
 		cout << i + 1 << ") array1[" << i << "]: " << array1[i];
 		cout << " -- array2[" << i << "]: " << array2[i] << "\n";
@@ -57,7 +60,8 @@ int main( int argc , char* argv[] )
 	cout << "==================================================\n";
 
 	cout << "The content of the arrays using index are:\n";
-	for ( int i = 0 ; i < numRen ; ++i )
+
+	for( int i = 0 ; i < numRen ; ++i )
 	{
 		array1[i] = array1[i] + 100;
 		array2[i] = array2[i] + 100;
@@ -68,7 +72,8 @@ int main( int argc , char* argv[] )
 	cout << "==================================================\n";
 
 	cout << "The content of the arrays using pointers are:\n";
-	for ( int i = 0 ; i < numRen ; ++i ) 
+	
+	for( int i = 0 ; i < numRen ; ++i ) 
 	{
 		*( array1 + i ) = *( array1 + i ) + 20;
 		*( array1Ptr + i ) = *( array1Ptr + i ) + 20;
@@ -79,7 +84,7 @@ int main( int argc , char* argv[] )
 
 	cout << "==================================================\n";
 
-	free( array2 );
-	system( "pause" );
+    free( array2 );
+    system( "pause" );
 	return 0;
 }
