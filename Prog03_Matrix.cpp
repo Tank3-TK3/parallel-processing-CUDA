@@ -12,7 +12,7 @@ const int numDep = 4;
 
 int main( int argc , char* argv[] )
 {
-    int pos;
+	int pos;
 	float matrix1[numRow][numCol];
 	float *matrix2;
 	float matrix3[numRow][numCol][numDep];
@@ -25,9 +25,9 @@ int main( int argc , char* argv[] )
 	srand( ( unsigned ) time( NULL ) );
 
 	for( int i = 0 ; i < numRow ; ++i ) 
-    {
+	{
 		for( int j = 0 ; j < numCol ; ++j ) 
-        {
+		{
 			pos = ( i * numCol ) + j;
 			matrix1[i][j] = ( ( float ) rand() / ( float ) RAND_MAX ) * 100;
 			matrix2[pos] = ( ( float ) rand() / ( float ) RAND_MAX ) * 100;
@@ -35,11 +35,11 @@ int main( int argc , char* argv[] )
 	}
 
 	for( int i = 0 ; i < numRow ; ++i )
-    {
+	{
 		for( int j = 0 ; j < numCol ; ++j )
-        {
+		{
 			for( int k = 0 ; k < numDep ; ++k )
-            {
+			{
 				matrix3[i][j][k] = ( ( float ) rand() / ( float ) RAND_MAX ) * 100;
 			}
 		}
@@ -66,13 +66,13 @@ int main( int argc , char* argv[] )
 	cout << "The contents of the matrices are:\n";
 
 	for( int i = 0 ; i < numRow ; ++i )
-    {
+	{
 		for( int j = 0 ; j < numCol ; ++j )
-        {
+		{
 			pos = ( i * numCol ) + j;
 			cout << pos + 1 << ") matrix1["<< i <<"][" << j << "]: ";
-            cout << matrix1[i][j] << " -- matrix2[" << pos << "]: ";
-            cout << matrix2[pos] << "\n";
+			cout << matrix1[i][j] << " -- matrix2[" << pos << "]: ";
+			cout << matrix2[pos] << "\n";
 		}
 	}
 
@@ -81,17 +81,17 @@ int main( int argc , char* argv[] )
 	cout << "The updated content of the matrices are:\n";
 
 	for( int i = 0 ; i < numRow ; ++i )
-    {
+	{
 		for( int j = 0 ; j < numCol ; ++j )
-        {
+		{
 			pos = ( i * numCol ) + j;
 			matrix1[i][j] = matrix1[i][j] + 10;
 			*( mat1Ptr + pos ) = *( mat1Ptr + pos ) + 20;
 			matrix2[pos] = matrix2[pos] + 20;
 			*( matrix2 + pos ) = *( matrix2 + pos ) + 30;
-            cout << pos + 1 << ") matrix1["<< i <<"][" << j << "]: ";
-            cout << *( mat1Ptr + pos ) << " -- matrix2[" << pos << "]: ";
-            cout << matrix2[pos] << "\n";
+			cout << pos + 1 << ") matrix1["<< i <<"][" << j << "]: ";
+			cout << *( mat1Ptr + pos ) << " -- matrix2[" << pos << "]: ";
+			cout << matrix2[pos] << "\n";
 		}
 	}
 
@@ -100,15 +100,15 @@ int main( int argc , char* argv[] )
 	cout << "The content of the 3D matrix is:\n";
 
 	for( int i = 0 ; i < numRow ; ++i )
-    {
+	{
 		for( int j = 0 ; j < numCol ; ++j )
-        {
+		{
 			for( int k = 0 ; k < numDep ; ++k )
-            {
+			{
 				pos = i * ( numCol * numDep ) + j * ( numDep ) + k;
-                cout << pos + 1 << ") matrix3[" << i << "][" << j << "][";
-                cout << k << "]: " << matrix3[i][j][k] << " -- matrix3[";
-                cout << pos << "]: " << mat3Ptr[pos] << "\n";
+				cout << pos + 1 << ") matrix3[" << i << "][" << j << "][";
+				cout << k << "]: " << matrix3[i][j][k] << " -- matrix3[";
+				cout << pos << "]: " << mat3Ptr[pos] << "\n";
 			}
 		}
 	}
@@ -118,19 +118,19 @@ int main( int argc , char* argv[] )
 	cout << "The updated content of the matrix is:\n";
 
 	for( int i = 0 ; i < numRow ; ++i )
-    {
+	{
 		for( int j = 0 ; j < numCol ; ++j )
-        {
+		{
 			for( int k = 0 ; k < numDep ; ++k )
-            {
+			{
 				pos = i * ( numCol * numDep ) + j * ( numDep ) + k;
 				matrix3[i][j][k] = matrix3[i][j][k] + 10;
 				mat3Ptr[pos] = mat3Ptr[pos] + 20;
 				*( mat3Ptr + pos ) = *( mat3Ptr + pos ) + 20;
 				cout << "%d) matrix3[%d][%d][%d]: %10.5f -- matrix3[%d]: %10.5f-- matrix3[%d]: %10.5f\n",
-					pos + 1, i, j, k, matrix3[i][j][k],
-					pos, mat3Ptr[pos],
-					pos, *(mat3Ptr + pos);
+				pos + 1, i, j, k, matrix3[i][j][k],
+				pos, mat3Ptr[pos],
+				pos, *(mat3Ptr + pos);
 			}
 		}
 	}
@@ -138,6 +138,6 @@ int main( int argc , char* argv[] )
 	cout << "==================================================\n";
 
 	free( matrix2 );
-    system( "pause" );
+	system( "pause" );
 	return 0;
 }
