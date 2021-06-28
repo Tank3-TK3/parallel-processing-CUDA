@@ -127,10 +127,9 @@ int main( int argc , char* argv[] )
 				matrix3[i][j][k] = matrix3[i][j][k] + 10;
 				mat3Ptr[pos] = mat3Ptr[pos] + 20;
 				*( mat3Ptr + pos ) = *( mat3Ptr + pos ) + 20;
-				cout << "%d) matrix3[%d][%d][%d]: %10.5f -- matrix3[%d]: %10.5f-- matrix3[%d]: %10.5f\n",
-				pos + 1, i, j, k, matrix3[i][j][k],
-				pos, mat3Ptr[pos],
-				pos, *(mat3Ptr + pos);
+				cout << pos + 1 << ") matrix3[" << i << "][" << j << "][";
+				cout << k << "]: " << matrix3[i][j][k] << " -- matrix3[";
+				cout << pos << "]: " << *(mat3Ptr + pos) << "\n";
 			}
 		}
 	}
