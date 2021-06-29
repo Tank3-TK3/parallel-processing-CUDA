@@ -10,55 +10,57 @@ using namespace std;
 string getType( cudaDeviceProp devProp )
 {
 	string letrero = "";
-	switch (devProp.major) {
-	case 2: // Fermi
-		letrero = "Fermi";
-		break;
-	case 3: // Kepler
-		letrero = "Kepler";
-		break;
-	case 5: // Maxwell
-		letrero = "Maxwell";
-		break;
-	case 6: // Pascal
-		letrero = "Pascal";
-		break;
-	case 7: // Volta
-		letrero = "Volta";
-		break;
-	default:
-		letrero = "Unknown device type";
-		break;
+	switch( devProp.major )
+	{
+		case 2: // Fermi
+			letrero = "Fermi";
+			break;
+		case 3: // Kepler
+			letrero = "Kepler";
+			break;
+		case 5: // Maxwell
+			letrero = "Maxwell";
+			break;
+		case 6: // Pascal
+			letrero = "Pascal";
+			break;
+		case 7: // Volta
+			letrero = "Volta";
+			break;
+		default:
+			letrero = "Unknown device type";
+			break;
 	}
 	return letrero;
 }
 
-int getSPcores(cudaDeviceProp devProp)
+int getSPcores( cudaDeviceProp devProp )
 {
 	int cores = 0;
 	int mp = devProp.multiProcessorCount;
-	switch (devProp.major) {
-	case 2: // Fermi
-		if (devProp.minor == 1) cores = mp * 48;
-		else cores = mp * 32;
-		break;
-	case 3: // Kepler
-		cores = mp * 192;
-		break;
-	case 5: // Maxwell
-		cores = mp * 128;
-		break;
-	case 6: // Pascal
-		if (devProp.minor == 1) cores = mp * 128;
-		else if (devProp.minor == 0) cores = mp * 64;
-		else cout << "Unknown device type\n";
-		break;
-	case 7: // Volta
-		cores = mp * 64;
-		break;
-	default:
-		cout << "Unknown device type\n";
-		break;
+	switch( devProp.major )
+	{
+		case 2: // Fermi
+			if (devProp.minor == 1) cores = mp * 48;
+			else cores = mp * 32;
+			break;
+		case 3: // Kepler
+			cores = mp * 192;
+			break;
+		case 5: // Maxwell
+			cores = mp * 128;
+			break;
+		case 6: // Pascal
+			if (devProp.minor == 1) cores = mp * 128;
+			else if (devProp.minor == 0) cores = mp * 64;
+			else cout << "Unknown device type\n";
+			break;
+		case 7: // Volta
+			cores = mp * 64;
+			break;
+		default:
+			cout << "Unknown device type\n";
+			break;
 	}
 	return cores;
 }
@@ -68,7 +70,7 @@ void printDevProp( int i )
 	cudaDeviceProp devProp;
 	cudaGetDeviceProperties( &devProp , i );
 	cout << " - ASCII string identifying device: " << devProp.name << "\n";
-    cout << " - Device architecture name: " << getType(devProp).c_str() << "\n";
+	cout << " - Device architecture name: " << getType(devProp).c_str() << "\n";
 	cout << " - Major compute capability: " << devProp.major << "\n";
 	cout << " - Minor compute capability: " << devProp.minor << "\n";
 	cout << "Numero de procesadores: %d\n" << devProp.multiProcessorCount;
@@ -80,9 +82,9 @@ void printDevProp( int i )
 	cout << "Pitch maximo de memoria:          %u\n" << devProp.memPitch;
 	cout << "Hilos maximos por bloque:     %d\n" << devProp.maxThreadsPerBlock;
 	for (int i = 0; i < 3; ++i)
-		cout << "Dimension maxima %d de grid:   %d\n" << i, devProp.maxGridSize[i];
+	cout << "Dimension maxima %d de grid:   %d\n" << i, devProp.maxGridSize[i];
 	for (int i = 0; i < 3; ++i)
-		cout << "Dimension maxima %d de bloque:  %d\n" << i, devProp.maxThreadsDim[i];
+	cout << "Dimension maxima %d de bloque:  %d\n" << i, devProp.maxThreadsDim[i];
 	cout << "Velocidad del reloj:                    %d\n" << devProp.clockRate;
 	cout << "Memoria constante total:         %u\n" << devProp.totalConstMem;
 	cout << "Alineamiento de textura:             %u\n" << devProp.textureAlignment;
