@@ -2,13 +2,14 @@
 //           Program 04 Query Device            //
 //////////////////////////////////////////////////
 #include <iostream>
+#include <string>
 #include <cuda_runtime.h>
 
 using namespace std;
 
-char* getDeviceArchitecture( cudaDeviceProp devProp )
+string getDeviceArchitecture( cudaDeviceProp devProp )
 {
-	char* sign = "";
+	string sign = "";
 	switch( devProp.major )
 	{
 	case 2:
@@ -81,23 +82,22 @@ void printDevProp( int i )
 	cout << " - Major compute capability: " << devProp.major << "\n";
 	cout << " - Minor compute capability: " << devProp.minor << "\n";
 	cout << " - Number of multiprocessors on device: " << devProp.multiProcessorCount << "\n";
-	cout << " - Cores CUDA: %d\n" << getSPcores(devProp);
-	cout << "Total de memoria global:           %u\n" << devProp.totalGlobalMem;
-	cout << "Total de memoria compartida por bloque: %u\n" << devProp.sharedMemPerBlock;
-	cout << "Total de registros por bloque:     %d\n" << devProp.regsPerBlock;
-	cout << "Tamaño del warp:                     %d\n" << devProp.warpSize;
-	cout << "Pitch maximo de memoria:          %u\n" << devProp.memPitch;
-	cout << "Hilos maximos por bloque:     %d\n" << devProp.maxThreadsPerBlock;
+	cout << " - Number of CUDA cores: " << getSPcores( devProp ) << "\n";
+	cout << " - Global memory available on device in bytes: " << devProp.totalGlobalMem << "\n";
+	cout << " - Shared memory available per block in bytes: " << devProp.sharedMemPerBlock << "\n";
+	cout << " - 32-bit registers available per block: " << devProp.regsPerBlock << "\n";
+	cout << " - Warp size in threads: " << devProp.warpSize << "\n";
+	cout << " - Maximum pitch in bytes allowed by memory copies: " << devProp.memPitch << "\n";
+	cout << " - Maximum number of threads per block: " << devProp.maxThreadsPerBlock << "\n";
+	for( int i = 0 ; i < 3 ; ++i )
+        cout << " - Maximum dimension " << i << " of the grid: " << devProp.maxGridSize[i] << "\n";
 	for ( int i = 0 ; i < 3 ; ++i )
-		cout << "Dimension maxima %d de grid:   %d\n" << i, devProp.maxGridSize[i];
-	for ( int i = 0 ; i < 3 ; ++i )
-		cout << "Dimension maxima %d de bloque:  %d\n" << i, devProp.maxThreadsDim[i];
-	cout << "Velocidad del reloj:                    %d\n" << devProp.clockRate;
-	cout << "Memoria constante total:         %u\n" << devProp.totalConstMem;
-	cout << "Alineamiento de textura:             %u\n" << devProp.textureAlignment;
-	cout << "Copiado y ejecucion concurrente: %s\n" << (devProp.deviceOverlap ? "Si" : "No");
-	cout << "Numero de multiprocesadores:     %d\n" << devProp.multiProcessorCount;
+		cout << " - Maximum dimension " << i << " of the block: " << devProp.maxThreadsDim[i] << "\n";
+	cout << " - Clock frequency in kilohertz: " << devProp.clockRate << "\n";
+	cout << " - Constant memory available on device in bytes: " << devProp.totalConstMem << "\n";
+    cout << " - Number of asynchronous engines: " << devProp.asyncEngineCount << "\n";
 	cout << "Timeout de ejecucion del Kernel:      %s\n" << (devProp.kernelExecTimeoutEnabled ? "Si" : "No");
+    cout << " - Alignment requirement for textures: " << devProp.textureAlignment << "\n";
 }
 
 int main( int argc, char* argv[] )
