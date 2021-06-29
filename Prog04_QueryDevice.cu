@@ -91,9 +91,9 @@ void printDevProp( int i )
 	cout << " - Maximum pitch in bytes allowed by memory copies: " << devProp.memPitch << "\n";
 	cout << " - Maximum number of threads per block: " << devProp.maxThreadsPerBlock << "\n";
 	for( int i = 0 ; i < 3 ; ++i )
-	cout << " - Maximum dimension " << i << " of the grid: " << devProp.maxGridSize[i] << "\n";
+		cout << " - Maximum dimension " << i << " of the grid: " << devProp.maxGridSize[i] << "\n";
 	for ( int i = 0 ; i < 3 ; ++i )
-	cout << " - Maximum dimension " << i << " of the block: " << devProp.maxThreadsDim[i] << "\n";
+		cout << " - Maximum dimension " << i << " of the block: " << devProp.maxThreadsDim[i] << "\n";
 	cout << " - Clock frequency in kilohertz: " << devProp.clockRate << "\n";
 	cout << " - Constant memory available on device in bytes: " << devProp.totalConstMem << "\n";
 	cout << " - Number of asynchronous engines: " << devProp.asyncEngineCount << "\n";
