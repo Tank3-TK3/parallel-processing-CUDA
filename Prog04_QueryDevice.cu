@@ -96,7 +96,7 @@ void printDevProp( int i )
 	cout << " - Clock frequency in kilohertz: " << devProp.clockRate << "\n";
 	cout << " - Constant memory available on device in bytes: " << devProp.totalConstMem << "\n";
     cout << " - Number of asynchronous engines: " << devProp.asyncEngineCount << "\n";
-	cout << "Timeout de ejecucion del Kernel:      %s\n" << (devProp.kernelExecTimeoutEnabled ? "Si" : "No");
+    cout << " - Specified whether there is a run time limit on kernels: " << devProp.kernelExecTimeoutEnabled << "\n";
     cout << " - Alignment requirement for textures: " << devProp.textureAlignment << "\n";
 }
 
