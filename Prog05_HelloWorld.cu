@@ -1,3 +1,6 @@
+//////////////////////////////////////////////////
+//           Program 05 Hello World             //
+//////////////////////////////////////////////////
 #include <stdio.h>
 #include <time.h>
 #include <cuda_runtime.h>
@@ -88,7 +91,7 @@ int main(int argc, char* argv[])
     cout << "##################################################\n";
 
     // set the ID of the CUDA device
-    cudaSetDevice(0);
+    cudaSetDevice( 0 );
 
     // Caso 1 - 1 Bloque con 1 Hilo
     //dim3 dimGrid(1);
@@ -155,11 +158,8 @@ int main(int argc, char* argv[])
 
     printf("\n");
     printf("Configuracion de ejecucion: \n");
-    printf("Grid [%d, %d, %d] Bloque [%d, %d, %d]\n",
-        dimGrid.x, dimGrid.y, dimGrid.z,
-        dimBlock.x, dimBlock.y, dimBlock.z);
+    printf("Grid [%d, %d, %d] Bloque [%d, %d, %d]\n", dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
 
-    printf("\nPresione cualquier tecla para salir...");
-    char c;
-    scanf("%c", &c);
+    system( "pause" );
+	return 0;
 }
