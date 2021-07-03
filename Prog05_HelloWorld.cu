@@ -12,7 +12,7 @@ using namespace std;
 __global__ void hello_kernel()
 {
     // Caso 1
-    //int tid = threadIdx.x;
+    int tid = threadIdx.x;
 
     // Caso 2
     //int tid = blockIdx.x;
@@ -66,20 +66,17 @@ __global__ void hello_kernel()
     //	+ numHilo;
 
     // Caso 12
-    int numBloque = (blockIdx.x * gridDim.y * gridDim.z) +
-        (blockIdx.y * gridDim.z) +
-        blockIdx.z;
-    int numHilo = (threadIdx.x * blockDim.y * blockDim.z) +
-        (threadIdx.y * blockDim.z) +
-        threadIdx.z;
-    int tid = (numBloque * blockDim.x * blockDim.y * blockDim.z)
-        + numHilo;
+    // int numBloque = (blockIdx.x * gridDim.y * gridDim.z) +
+    //     (blockIdx.y * gridDim.z) +
+    //     blockIdx.z;
+    // int numHilo = (threadIdx.x * blockDim.y * blockDim.z) +
+    //     (threadIdx.y * blockDim.z) +
+    //     threadIdx.z;
+    // int tid = (numBloque * blockDim.x * blockDim.y * blockDim.z)
+    //     + numHilo;
 
     // print a greeting message
-    printf("Soy el hilo (%2d, %2d, %2d) del bloque (%2d, %2d, %2d) # %2d\n",
-        threadIdx.x, threadIdx.y, threadIdx.z,
-        blockIdx.x, blockIdx.y, blockIdx.z,
-        tid);
+    printf("Soy el hilo (%2d, %2d, %2d) del bloque (%2d, %2d, %2d) # %2d\n", threadIdx.x, threadIdx.y, threadIdx.z, blockIdx.x, blockIdx.y, blockIdx.z, tid);
     //printf("Hello from thread %d!\n", tid);
 }
 
@@ -94,8 +91,8 @@ int main(int argc, char* argv[])
     cudaSetDevice( 0 );
 
     // Caso 1 - 1 Bloque con 1 Hilo
-    //dim3 dimGrid(1);
-    //dim3 dimBlock(1);
+    dim3 dimGrid(1);
+    dim3 dimBlock(1);
 
     // Caso 2 - n Bloques con 1 Hilo c/u
     //dim3 dimGrid(20);
@@ -138,28 +135,26 @@ int main(int argc, char* argv[])
     //dim3 dimBlock(2, 3);
 
     // Caso 12 - n x m x r Bloques con p x s x t Hilos c/u
-    dim3 dimGrid(2, 3, 4);
-    dim3 dimBlock(2, 2, 3);
+    // dim3 dimGrid(2, 3, 4);
+    // dim3 dimBlock(2, 2, 3);
 
     clock_t timer1 = clock();
     // invoke kernel using 4 threads executed in 1 thread block
     hello_kernel << < dimGrid, dimBlock >> > ();
 
     timer1 = clock() - timer1;
-    printf("Operacion en Device toma %10.3f ms.\n",
-        (((float)timer1) / CLOCKS_PER_SEC) * 1000);
+    printf("Operacion en Device toma %10.3f ms.\n", (((float)timer1) / CLOCKS_PER_SEC) * 1000);
 
     // synchronize the GPU preventing premature termination
-    cudaDeviceSynchronize();
+	cudaDeviceSynchronize();
 
-    printf("\n");
-    printf("Hilos totales: %d\n",
-        dimGrid.x * dimGrid.y * dimGrid.z * dimBlock.x * dimBlock.y * dimBlock.z);
+	printf("\n");
+	printf("Hilos totales: %d\n", dimGrid.x * dimGrid.y * dimGrid.z * dimBlock.x * dimBlock.y * dimBlock.z);
 
-    printf("\n");
-    printf("Configuracion de ejecucion: \n");
-    printf("Grid [%d, %d, %d] Bloque [%d, %d, %d]\n", dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
+	printf("\n");
+	printf("Configuracion de ejecucion: \n");
+	printf("Grid [%d, %d, %d] Bloque [%d, %d, %d]\n", dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
 
-    system( "pause" );
+	system( "pause" );
 	return 0;
 }
