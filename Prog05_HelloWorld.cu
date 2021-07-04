@@ -1,21 +1,32 @@
 //////////////////////////////////////////////////
 //           Program 05 Hello World             //
 //////////////////////////////////////////////////
-#include <stdio.h>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
-#include <iostream>
 
-using namespace std;
+__device__ void case01()
+{
+	int tid = threadIdx.x;
+	printf("Soy el hilo ( %2d , %2d , %2d ) del bloque ( %2d , %2d , %2d ) #%2d\n", 
+	threadIdx.x, threadIdx.y, threadIdx.z, blockIdx.x, blockIdx.y, blockIdx.z, tid);
+}
+
+__device__ void case02()
+{
+	int tid = blockIdx.x;
+	printf("Soy el hilo ( %2d , %2d , %2d ) del bloque ( %2d , %2d , %2d ) #%2d\n", 
+	threadIdx.x, threadIdx.y, threadIdx.z, blockIdx.x, blockIdx.y, blockIdx.z, tid);
+}
 
 __global__ void hello_kernel()
 {
 	// Caso 1
-	int tid = threadIdx.x;
+	// int tid = threadIdx.x;
 
 	// Caso 2
-	//int tid = blockIdx.x;
+	int tid = blockIdx.x;
 
 	// Caso 3
 	//int tid = (blockIdx.x*blockDim.x)+threadIdx.x;
@@ -83,20 +94,20 @@ __global__ void hello_kernel()
 int main( int argc , char* argv[] )
 {
 	// Saludos desde el Host
-	cout << "##################################################\n";
-	cout << "\tHello, world from the host (CPU)!\n";
-	cout << "##################################################\n";
+	printf("##################################################\n");
+	printf("\tHello, world from the host (CPU)!\n");
+	printf("##################################################\n");
 
 	// set the ID of the CUDA device
 	cudaSetDevice( 0 );
 
 	// Caso 1 - 1 Bloque con 1 Hilo
-	dim3 dimGrid(1);
-	dim3 dimBlock(1);
+	// dim3 dimGrid(1);
+	// dim3 dimBlock(1);
 
 	// Caso 2 - n Bloques con 1 Hilo c/u
-	//dim3 dimGrid(20);
-	//dim3 dimBlock(1);
+	dim3 dimGrid(20);
+	dim3 dimBlock(1);
 
 	// Caso 3 - n Bloques con m Hilos c/u
 	//dim3 dimGrid(5);
@@ -140,10 +151,10 @@ int main( int argc , char* argv[] )
 
 	clock_t timer1 = clock();
 	// invoke kernel using 4 threads executed in 1 thread block
-	hello_kernel << < dimGrid, dimBlock >> > ();
+	hello_kernel <<< dimGrid , dimBlock >>>();
 
 	timer1 = clock() - timer1;
-	printf("Operacion en Device toma %10.3f ms.\n", (((float)timer1) / CLOCKS_PER_SEC) * 1000);
+	printf( "Operacion en Device toma %10.3f ms.\n" , ( ( ( float ) timer1 ) / CLOCKS_PER_SEC ) * 1000 );
 
 	// synchronize the GPU preventing premature termination
 	cudaDeviceSynchronize();
