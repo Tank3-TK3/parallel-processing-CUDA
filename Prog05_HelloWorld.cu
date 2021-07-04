@@ -6,18 +6,39 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
-__device__ void case01()
+__global__ void case01()
 {
 	int tid = threadIdx.x;
-	printf("Soy el hilo ( %2d , %2d , %2d ) del bloque ( %2d , %2d , %2d ) #%2d\n", 
-	threadIdx.x, threadIdx.y, threadIdx.z, blockIdx.x, blockIdx.y, blockIdx.z, tid);
+	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
+	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
 }
 
-__device__ void case02()
+__global__ void case02()
 {
 	int tid = blockIdx.x;
-	printf("Soy el hilo ( %2d , %2d , %2d ) del bloque ( %2d , %2d , %2d ) #%2d\n", 
-	threadIdx.x, threadIdx.y, threadIdx.z, blockIdx.x, blockIdx.y, blockIdx.z, tid);
+	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
+	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+}
+
+__global__ void case03()
+{
+	int tid = ( blockIdx.x * blockDim.x ) + threadIdx.x;
+	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
+	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+}
+
+__global__ void case04()
+{
+	int tid = ( blockIdx.x * gridDim.y ) + blockIdx.y;
+	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
+	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+}
+
+__global__ void case05()
+{
+	int tid = ( threadIdx.x * blockDim.y ) + threadIdx.y;
+	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
+	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
 }
 
 __global__ void hello_kernel()
@@ -26,18 +47,18 @@ __global__ void hello_kernel()
 	// int tid = threadIdx.x;
 
 	// Caso 2
-	int tid = blockIdx.x;
+	// int tid = blockIdx.x;
 
 	// Caso 3
-	//int tid = (blockIdx.x*blockDim.x)+threadIdx.x;
+	// int tid = (blockIdx.x*blockDim.x)+threadIdx.x;
 
 	// Caso 4
-	//int numBloque = (blockIdx.x * gridDim.y) + blockIdx.y;
-	//int tid = numBloque;
+	// int numBloque = (blockIdx.x * gridDim.y) + blockIdx.y;
+	// int tid = numBloque;
 
 	// Caso 5
-	//int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
-	//int tid = numHilo;
+	int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
+	int tid = numHilo;
 
 	// Caso 6
 	//int numBloque = blockIdx.x;
@@ -87,7 +108,8 @@ __global__ void hello_kernel()
 	//     + numHilo;
 
 	// print a greeting message
-	printf("Soy el hilo (%2d, %2d, %2d) del bloque (%2d, %2d, %2d) # %2d\n", threadIdx.x, threadIdx.y, threadIdx.z, blockIdx.x, blockIdx.y, blockIdx.z, tid);
+	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
+	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
 	//printf("Hello from thread %d!\n", tid);
 }
 
@@ -106,20 +128,20 @@ int main( int argc , char* argv[] )
 	// dim3 dimBlock(1);
 
 	// Caso 2 - n Bloques con 1 Hilo c/u
-	dim3 dimGrid(20);
-	dim3 dimBlock(1);
+	// dim3 dimGrid(20);
+	// dim3 dimBlock(1);
 
 	// Caso 3 - n Bloques con m Hilos c/u
-	//dim3 dimGrid(5);
-	//dim3 dimBlock(4);
+	// dim3 dimGrid(5);
+	// dim3 dimBlock(4);
 
 	// Caso 4 - n x m Bloques con 1 Hilo c/u
-	//dim3 dimGrid(4,5);
-	//dim3 dimBlock(1);
+	// dim3 dimGrid(4,5);
+	// dim3 dimBlock(1);
 
 	// Caso 5 - 1 Bloque con n x m Hilos c/u
-	//dim3 dimGrid(1);
-	//dim3 dimBlock(4,5);
+	dim3 dimGrid(1);
+	dim3 dimBlock(4,5);
 
 	// Caso 6 - n Bloques con m x r Hilos c/u
 	//dim3 dimGrid(5);
