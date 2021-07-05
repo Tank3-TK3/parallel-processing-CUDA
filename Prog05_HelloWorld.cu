@@ -12,51 +12,51 @@ __device__ void printInfo( int tid )
 	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
 }
 
-__device__ void case01()
+__global__ void case01()
 {
 	int tid = threadIdx.x;
 	printInfo( tid );
 }
 
-__device__ void case02()
+__global__ void case02()
 {
 	int tid = blockIdx.x;
 	printInfo( tid );
 }
 
-__device__ void case03()
+__global__ void case03()
 {
 	int tid = ( blockIdx.x * blockDim.x ) + threadIdx.x;
 	printInfo( tid );
 }
 
-__device__ void case04()
+__global__ void case04()
 {
 	int tid = ( blockIdx.x * gridDim.y ) + blockIdx.y;
 	printInfo( tid );
 }
 
-__device__ void case05()
+__global__ void case05()
 {
 	int tid = ( threadIdx.x * blockDim.y ) + threadIdx.y;
 	printInfo( tid );
 }
 
-__device__ void case06()
+__global__ void case06()
 {
 	int numHilo = ( threadIdx.x * blockDim.y ) + threadIdx.y;
 	int tid = ( blockIdx.x * blockDim.x * blockDim.y ) + numHilo;
 	printInfo( tid );
 }
 
-__device__ void case07()
+__global__ void case07()
 {
 	int numBloque = ( blockIdx.x * gridDim.y ) + blockIdx.y;
 	int tid = ( numBloque * blockDim.x ) + threadIdx.x;
 	printInfo( tid );
 }
 
-__device__ void case08()
+__global__ void case08()
 {
 	int numBloque = ( blockIdx.x * gridDim.y ) + blockIdx.y;
 	int numHilo = ( threadIdx.x * blockDim.y ) + threadIdx.y;
@@ -64,21 +64,21 @@ __device__ void case08()
 	printInfo( tid );
 }
 
-__device__ void case09()
+__global__ void case09()
 {
 	int numBloque = ( blockIdx.x * gridDim.y * gridDim.z ) + ( blockIdx.y * gridDim.z ) + blockIdx.z;
 	int tid = numBloque + threadIdx.x;
 	printInfo( tid );
 }
 
-__device__ void case10()
+__global__ void case10()
 {
 	int numBloque = ( blockIdx.x * gridDim.y * gridDim.z )  + ( blockIdx.y * gridDim.z ) + blockIdx.z;
 	int tid = ( numBloque * blockDim.x ) + threadIdx.x;
 	printInfo( tid );
 }
 
-__device__ void case11()
+__global__ void case11()
 {
 	int numBloque = ( blockIdx.x * gridDim.y * gridDim.z ) + ( blockIdx.y * gridDim.z ) + blockIdx.z;
 	int numHilo = ( threadIdx.x * blockDim.y ) + threadIdx.y;
@@ -86,7 +86,7 @@ __device__ void case11()
 	printInfo( tid );
 }
 
-__device__ void case12()
+__global__ void case12()
 {
 	int numBloque = ( blockIdx.x * gridDim.y * gridDim.z ) + ( blockIdx.y * gridDim.z ) + blockIdx.z;
 	int numHilo = ( threadIdx.x * blockDim.y * blockDim.z ) + ( threadIdx.y * blockDim.z ) + threadIdx.z;
@@ -165,6 +165,48 @@ __global__ void hello_kernel()
 	//threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
 	printInfo( tid );
 	//printf("Hello from thread %d!\n", tid);
+}
+
+__host__ void switchCase( int opt )
+{
+	switch( opt )
+	{
+	case 1: // Case 1 - 1 Block with 1 Thread
+		dim3 dimGrid( 1 );
+		dim3 dimBlock( 1 );
+		case01 <<< dimGrid , dimBlock >>>();
+		break;
+	case 2: // Case 2 - n Blocks with 1 Thread each
+		dim3 dimGrid( 20 );
+		dim3 dimBlock( 1 );
+		case02 <<< dimGrid , dimBlock >>>();
+		break;
+	case 3: // Case 3 - n Blocks with m Threads each
+		dim3 dimGrid( 5 );
+		dim3 dimBlock( 4 );
+		case03 <<< dimGrid , dimBlock >>>();
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	case 9:
+		break;
+	case 10:
+		break;
+	case 11:
+		break;
+	case 12:
+		break;
+	default:
+		break;
+	}
 }
 
 int main( int argc , char* argv[] )
