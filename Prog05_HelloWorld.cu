@@ -6,39 +6,40 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
-__global__ void case01()
+__device__ void printInfo( int tid )
+{
+	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
+	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+}
+
+__device__ void case01()
 {
 	int tid = threadIdx.x;
-	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
-	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+	printInfo( tid );
 }
 
-__global__ void case02()
+__device__ void case02()
 {
 	int tid = blockIdx.x;
-	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
-	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+	printInfo( tid );
 }
 
-__global__ void case03()
+__device__ void case03()
 {
 	int tid = ( blockIdx.x * blockDim.x ) + threadIdx.x;
-	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
-	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+	printInfo( tid );
 }
 
-__global__ void case04()
+__device__ void case04()
 {
 	int tid = ( blockIdx.x * gridDim.y ) + blockIdx.y;
-	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
-	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+	printInfo( tid );
 }
 
-__global__ void case05()
+__device__ void case05()
 {
 	int tid = ( threadIdx.x * blockDim.y ) + threadIdx.y;
-	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
-	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+	printInfo( tid );
 }
 
 __global__ void hello_kernel()
@@ -108,8 +109,9 @@ __global__ void hello_kernel()
 	//     + numHilo;
 
 	// print a greeting message
-	printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
-	threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+	//printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
+	//threadIdx.x , threadIdx.y , threadIdx.z , blockIdx.x , blockIdx.y , blockIdx.z , tid );
+	printInfo( tid );
 	//printf("Hello from thread %d!\n", tid);
 }
 
