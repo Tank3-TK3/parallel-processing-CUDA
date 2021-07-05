@@ -42,6 +42,58 @@ __device__ void case05()
 	printInfo( tid );
 }
 
+__device__ void case06()
+{
+	int numHilo = ( threadIdx.x * blockDim.y ) + threadIdx.y;
+	int tid = ( blockIdx.x * blockDim.x * blockDim.y ) + numHilo;
+	printInfo( tid );
+}
+
+__device__ void case07()
+{
+	int numBloque = ( blockIdx.x * gridDim.y ) + blockIdx.y;
+	int tid = ( numBloque * blockDim.x ) + threadIdx.x;
+	printInfo( tid );
+}
+
+__device__ void case08()
+{
+	int numBloque = ( blockIdx.x * gridDim.y ) + blockIdx.y;
+	int numHilo = ( threadIdx.x * blockDim.y ) + threadIdx.y;
+	int tid = ( numBloque * blockDim.x * blockDim.y ) + numHilo;
+	printInfo( tid );
+}
+
+__device__ void case09()
+{
+	int numBloque = ( blockIdx.x * gridDim.y * gridDim.z ) + ( blockIdx.y * gridDim.z ) + blockIdx.z;
+	int tid = numBloque + threadIdx.x;
+	printInfo( tid );
+}
+
+__device__ void case10()
+{
+	int numBloque = ( blockIdx.x * gridDim.y * gridDim.z )  + ( blockIdx.y * gridDim.z ) + blockIdx.z;
+	int tid = ( numBloque * blockDim.x ) + threadIdx.x;
+	printInfo( tid );
+}
+
+__device__ void case11()
+{
+	int numBloque = ( blockIdx.x * gridDim.y * gridDim.z ) + ( blockIdx.y * gridDim.z ) + blockIdx.z;
+	int numHilo = ( threadIdx.x * blockDim.y ) + threadIdx.y;
+	int tid = ( numBloque * blockDim.x * blockDim.y ) + numHilo;
+	printInfo( tid );
+}
+
+__device__ void case12()
+{
+	int numBloque = ( blockIdx.x * gridDim.y * gridDim.z ) + ( blockIdx.y * gridDim.z ) + blockIdx.z;
+	int numHilo = ( threadIdx.x * blockDim.y * blockDim.z ) + ( threadIdx.y * blockDim.z ) + threadIdx.z;
+	int tid = ( numBloque * blockDim.x * blockDim.y * blockDim.z ) + numHilo;
+	printInfo( tid );
+}
+
 __global__ void hello_kernel()
 {
 	// Caso 1
@@ -58,55 +110,55 @@ __global__ void hello_kernel()
 	// int tid = numBloque;
 
 	// Caso 5
-	int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
-	int tid = numHilo;
+	// int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
+	// int tid = numHilo;
 
 	// Caso 6
-	//int numBloque = blockIdx.x;
-	//int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
-	//int tid = (numBloque * blockDim.x * blockDim.y) + numHilo;
+	// int numBloque = blockIdx.x;
+	// int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
+	// int tid = (numBloque * blockDim.x * blockDim.y) + numHilo;
 
 	// Caso 7
-	//int numBloque = (blockIdx.x*gridDim.y)+blockIdx.y;
-	//int numHilo =threadIdx.x;
-	//int tid = (numBloque * blockDim.x) + numHilo;
+	// int numBloque = (blockIdx.x*gridDim.y)+blockIdx.y;
+	// int numHilo =threadIdx.x;
+	// int tid = (numBloque * blockDim.x) + numHilo;
 
 	// Caso 8
-	//int numBloque = (blockIdx.x*gridDim.y) + blockIdx.y;
-	//int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
-	//int tid = (numBloque * blockDim.x * blockDim.y) + numHilo;
+	// int numBloque = (blockIdx.x*gridDim.y) + blockIdx.y;
+	// int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
+	// int tid = (numBloque * blockDim.x * blockDim.y) + numHilo;
 
 	// Caso 9
-	//int numBloque = (blockIdx.x*gridDim.y*gridDim.z) + 
-	//				(blockIdx.y*gridDim.z)+
-	//				 blockIdx.z;
-	//int numHilo = threadIdx.x;
-	//int tid = numBloque + numHilo;
+	// int numBloque = (blockIdx.x*gridDim.y*gridDim.z) + 
+	// 				(blockIdx.y*gridDim.z)+
+	// 				 blockIdx.z;
+	// int numHilo = threadIdx.x;
+	// int tid = numBloque + numHilo;
 
 	// Caso 10
-	//int numBloque = (blockIdx.x*gridDim.y*gridDim.z) +
-	//	(blockIdx.y*gridDim.z) +
-	//	blockIdx.z;
-	//int numHilo = threadIdx.x;
-	//int tid = (numBloque*blockDim.x) + numHilo;
+	// int numBloque = (blockIdx.x*gridDim.y*gridDim.z) +
+	// 	(blockIdx.y*gridDim.z) +
+	// 	blockIdx.z;
+	// int numHilo = threadIdx.x;
+	// int tid = (numBloque*blockDim.x) + numHilo;
 
 	// Caso 11
-	//int numBloque = (blockIdx.x*gridDim.y*gridDim.z) +
-	//	(blockIdx.y*gridDim.z) +
-	//	blockIdx.z;
-	//int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
-	//int tid = (numBloque * blockDim.x * blockDim.y) 
-	//	+ numHilo;
+	// int numBloque = (blockIdx.x*gridDim.y*gridDim.z) +
+	// 	(blockIdx.y*gridDim.z) +
+	// 	blockIdx.z;
+	// int numHilo = (threadIdx.x * blockDim.y) + threadIdx.y;
+	// int tid = (numBloque * blockDim.x * blockDim.y) 
+	// 	+ numHilo;
 
 	// Caso 12
-	// int numBloque = (blockIdx.x * gridDim.y * gridDim.z) +
-	//     (blockIdx.y * gridDim.z) +
-	//     blockIdx.z;
-	// int numHilo = (threadIdx.x * blockDim.y * blockDim.z) +
-	//     (threadIdx.y * blockDim.z) +
-	//     threadIdx.z;
-	// int tid = (numBloque * blockDim.x * blockDim.y * blockDim.z)
-	//     + numHilo;
+	int numBloque = (blockIdx.x * gridDim.y * gridDim.z) +
+	    (blockIdx.y * gridDim.z) +
+	    blockIdx.z;
+	int numHilo = (threadIdx.x * blockDim.y * blockDim.z) +
+	    (threadIdx.y * blockDim.z) +
+	    threadIdx.z;
+	int tid = (numBloque * blockDim.x * blockDim.y * blockDim.z)
+	    + numHilo;
 
 	// print a greeting message
 	//printf("I'm the thread (%d , %d , %d) of the block (%d , %d , %d) # %d\n" ,
@@ -117,7 +169,6 @@ __global__ void hello_kernel()
 
 int main( int argc , char* argv[] )
 {
-	// Saludos desde el Host
 	printf("##################################################\n");
 	printf("\tHello, world from the host (CPU)!\n");
 	printf("##################################################\n");
@@ -142,16 +193,16 @@ int main( int argc , char* argv[] )
 	// dim3 dimBlock(1);
 
 	// Caso 5 - 1 Bloque con n x m Hilos c/u
-	dim3 dimGrid(1);
-	dim3 dimBlock(4,5);
+	// dim3 dimGrid(1);
+	// dim3 dimBlock(4,5);
 
 	// Caso 6 - n Bloques con m x r Hilos c/u
-	//dim3 dimGrid(5);
-	//dim3 dimBlock(3, 2);
+	// dim3 dimGrid(5);
+	// dim3 dimBlock(3, 2);
 
 	// Caso 7 - n x m Bloques con r Hilos c/u
-	//dim3 dimGrid(3, 2);
-	//dim3 dimBlock(4);
+	// dim3 dimGrid(3, 2);
+	// dim3 dimBlock(4);
 
 	// Caso 8 - n x m Bloques con r x s Hilos c/u
 	//dim3 dimGrid(3, 3);
@@ -170,15 +221,15 @@ int main( int argc , char* argv[] )
 	//dim3 dimBlock(2, 3);
 
 	// Caso 12 - n x m x r Bloques con p x s x t Hilos c/u
-	// dim3 dimGrid(2, 3, 4);
-	// dim3 dimBlock(2, 2, 3);
+	dim3 dimGrid(2, 3, 4);
+	dim3 dimBlock(2, 2, 3);
 
-	clock_t timer1 = clock();
+	clock_t timer = clock();
 	// invoke kernel using 4 threads executed in 1 thread block
 	hello_kernel <<< dimGrid , dimBlock >>>();
 
-	timer1 = clock() - timer1;
-	printf( "Operacion en Device toma %10.3f ms.\n" , ( ( ( float ) timer1 ) / CLOCKS_PER_SEC ) * 1000 );
+	timer = clock() - timer;
+	printf( "Operacion en Device toma %10.3f ms.\n" , ( ( ( float ) timer ) / CLOCKS_PER_SEC ) * 1000 );
 
 	// synchronize the GPU preventing premature termination
 	cudaDeviceSynchronize();
