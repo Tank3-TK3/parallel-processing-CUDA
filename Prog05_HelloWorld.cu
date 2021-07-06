@@ -209,7 +209,7 @@ int main( int argc , char* argv[] )
 				printStats( timer , dimGrid , dimBlock );
 				printf( "##################################################\n" );
 			break;
-		case 8: // Case 8 - n * m Blocks with r * s Threads each.
+		case 8: // Case08 - n * m Blocks with r * s Threads each.
 				printf( "##################################################\n" );
 				dimGrid = { 3 , 3 , 1 };
 				dimBlock = { 2 , 2 , 1 };
@@ -219,35 +219,51 @@ int main( int argc , char* argv[] )
 				printStats( timer , dimGrid , dimBlock );
 				printf( "##################################################\n" );
 			break;
-		case 9:
+		case 9: // Case09 - n * m * r Blocks with 1 Thread each.
+				printf( "##################################################\n" );
+				dimGrid = { 2 , 3 , 4 };
+				dimBlock = { 1 , 1 , 1 };
+				timer = clock();
+				case09 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
-		case 10:
+		case 10: // Case10 - n * m * r Blocks with p Threads each.
+				printf( "##################################################\n" );
+				dimGrid = { 2 , 3 , 4 };
+				dimBlock = { 3 , 1 , 1 };
+				timer = clock();
+				case10 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
-		case 11:
+		case 11: // Case11 - n * m * r Blocks with p * s Threads each.
+				printf( "##################################################\n" );
+				dimGrid = { 2 , 3 , 4 };
+				dimBlock = { 2 , 3 , 1 };
+				timer = clock();
+				case11 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
-		case 12:
+		case 12: // Case12 - n * m * r Blocks with p * s * t Threads each.
+				printf( "##################################################\n" );
+				dimGrid = { 2 , 3 , 4 };
+				dimBlock = { 2 , 2 , 3 };
+				timer = clock();
+				case12 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
 		default:
 				printf(">>> INVALID OPTION <<<\n");
 				return 0;
 			break;
 	}
-
-	// Caso 9 - n x m x r Bloques con 1 Hilo c/u
-	//dim3 dimGrid(2, 3, 4);
-	//dim3 dimBlock(1);
-
-	// Caso 10 - n x m x r Bloques con p Hilos c/u
-	//dim3 dimGrid(2, 3, 4);
-	//dim3 dimBlock(3);
-
-	// Caso 11 - n x m x r Bloques con p x s Hilos c/u
-	//dim3 dimGrid(2, 3, 4);
-	//dim3 dimBlock(2, 3);
-
-	// Caso 12 - n x m x r Bloques con p x s x t Hilos c/u
-	// dim3 dimGrid(2, 3, 4);
-	// dim3 dimBlock(2, 2, 3);
 	
 	system( "pause" );
 	return 0;
