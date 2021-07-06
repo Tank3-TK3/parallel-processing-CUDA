@@ -94,6 +94,18 @@ __global__ void case12()
 	printInfo( tid );
 }
 
+__host__ void printStats( clock_t timer , dim3 dimGrid , dim3 dimBlock )
+{
+	printf( "> The operation on the device took: %.3f ms.\n\n" , 
+		( ( ( float ) timer ) / CLOCKS_PER_SEC ) * 1000 );
+	cudaDeviceSynchronize(); // Synchronize the GPU preventing premature termination
+	printf( "\n- Total Threads: %d\n" , 
+		dimGrid.x * dimGrid.y * dimGrid.z * dimBlock.x * dimBlock.y * dimBlock.z );
+	printf( "- Configuracion de ejecucion: \n");
+	printf( "\t+ Grid [%d, %d, %d] Bloque [%d, %d, %d]\n", 
+		dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
+}
+
 __host__ int printMenuOpt()
 {
 	int opt = ' ';
@@ -124,7 +136,7 @@ int main( int argc , char* argv[] )
 
 	// set the ID of the CUDA device
 	cudaSetDevice( 0 );
-
+	
 	switch ( printMenuOpt() )
 	{
 		case 1: // Case01 - 1 Block with 1 Thread.
@@ -134,26 +146,78 @@ int main( int argc , char* argv[] )
 				timer = clock();
 				case01 <<< dimGrid , dimBlock >>>();
 				timer = clock() - timer;
-				printf( "> The operation on the device took: %.3f ms.\n\n" , ( ( ( float ) timer ) / CLOCKS_PER_SEC ) * 1000 );
-				cudaDeviceSynchronize(); // Synchronize the GPU preventing premature termination
-				printf( "\n- Total Threads: %d\n" , dimGrid.x * dimGrid.y * dimGrid.z * dimBlock.x * dimBlock.y * dimBlock.z );
-				printf( "- Configuracion de ejecucion: \n");
-				printf( "\t+ Grid [%d, %d, %d] Bloque [%d, %d, %d]\n", dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
+				printStats( timer , dimGrid , dimBlock );
 				printf( "##################################################\n" );
 			break;
 		case 2: // Case02 - n Blocks with 1 Thread each.
+				printf( "##################################################\n" );
+				dimGrid = { 20 , 1 , 1 };
+				dimBlock = { 1 , 1 , 1 };
+				timer = clock();
+				case02 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
 		case 3: // Case03 - n Blocks with m Threads each.
+				printf( "##################################################\n" );
+				dimGrid = { 5 , 1 , 1 };
+				dimBlock = { 4 , 1 , 1 };
+				timer = clock();
+				case03 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
-		case 4:
+		case 4: // Case04 - n * m Blocks with 1 Thread each.
+				printf( "##################################################\n" );
+				dimGrid = { 4 , 5 , 1 };
+				dimBlock = { 1 , 1 , 1 };
+				timer = clock();
+				case04 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
-		case 5:
+		case 5: // Case05 - 1 Block with n * m Threads each.
+				printf( "##################################################\n" );
+				dimGrid = { 1 , 1 , 1 };
+				dimBlock = { 4 , 5 , 1 };
+				timer = clock();
+				case05 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
-		case 6:
+		case 6: // Case06 - n Blocks with m * r Threads each.
+				printf( "##################################################\n" );
+				dimGrid = { 5 , 1 , 1 };
+				dimBlock = { 3 , 2 , 1 };
+				timer = clock();
+				case06 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
-		case 7:
+		case 7: // Case07 - n * m Blocks with r Threads each.
+				printf( "##################################################\n" );
+				dimGrid = { 3 , 2 , 1 };
+				dimBlock = { 4 , 1 , 1 };
+				timer = clock();
+				case07 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
-		case 8:
+		case 8: // Case 8 - n * m Blocks with r * s Threads each.
+				printf( "##################################################\n" );
+				dimGrid = { 3 , 3 , 1 };
+				dimBlock = { 2 , 2 , 1 };
+				timer = clock();
+				case08 <<< dimGrid , dimBlock >>>();
+				timer = clock() - timer;
+				printStats( timer , dimGrid , dimBlock );
+				printf( "##################################################\n" );
 			break;
 		case 9:
 			break;
@@ -164,41 +228,10 @@ int main( int argc , char* argv[] )
 		case 12:
 			break;
 		default:
+				printf(">>> INVALID OPTION <<<\n");
 				return 0;
 			break;
 	}
-
-	// Caso 1 - 1 Bloque con 1 Hilo
-	// dim3 dimGrid(1);
-	// dim3 dimBlock(1);
-
-	// Caso 2 - n Bloques con 1 Hilo c/u
-	// dim3 dimGrid(20);
-	// dim3 dimBlock(1);
-
-	// Caso 3 - n Bloques con m Hilos c/u
-	// dim3 dimGrid(5);
-	// dim3 dimBlock(4);
-
-	// Caso 4 - n x m Bloques con 1 Hilo c/u
-	// dim3 dimGrid(4,5);
-	// dim3 dimBlock(1);
-
-	// Caso 5 - 1 Bloque con n x m Hilos c/u
-	// dim3 dimGrid(1);
-	// dim3 dimBlock(4,5);
-
-	// Caso 6 - n Bloques con m x r Hilos c/u
-	// dim3 dimGrid(5);
-	// dim3 dimBlock(3, 2);
-
-	// Caso 7 - n x m Bloques con r Hilos c/u
-	// dim3 dimGrid(3, 2);
-	// dim3 dimBlock(4);
-
-	// Caso 8 - n x m Bloques con r x s Hilos c/u
-	//dim3 dimGrid(3, 3);
-	//dim3 dimBlock(2, 2);
 
 	// Caso 9 - n x m x r Bloques con 1 Hilo c/u
 	//dim3 dimGrid(2, 3, 4);
