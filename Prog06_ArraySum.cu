@@ -11,14 +11,13 @@
 //////////////////////////////////////////////////
 //            Program 06 Array Sum              //
 //////////////////////////////////////////////////
-
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
-#include <cuda.h>
-#include <cstdio>
-#include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include <ctime>
+
+#include <cuda.h>
+#include <cuda_runtime.h>
+#include <device_launch_parameters.h>
 
 #define length 100 //63000
 #define epsilon float(0.0000001)
@@ -92,7 +91,8 @@ void addCPU(float *a, float *b, float *c) {
 	}
 }
 
-int main(void) {
+int main( int argc , char* argv[] )
+{
 	float a[length], b[length], gpu_c[length];
 	float cpu_c[length];
 	float *dev_a, *dev_b, *dev_c;
@@ -206,7 +206,6 @@ int main(void) {
 	cudaFree(dev_b);
 	cudaFree(dev_c);
 
-	printf("\nPresione cualquier tecla para salir...");
-	char tecla;
-	scanf("%c", &tecla);
+	system( "pause" );
+	return 0;
 }
