@@ -35,11 +35,11 @@ __host__ int printDevProp()
 	return devProp.maxThreadsPerBlock;
 }
 
-__global__ void add(float *a, float *b, float *c) {
-
+__global__ void add( float *a , float *b , float *c )
+{
 	// Caso 1
-	//int tid = blockIdx.x;  
-	//c[tid] = a[tid] + b[tid];
+	// int tid = blockIdx.x;  
+	// c[tid] = a[tid] + b[tid];
 
 	// Caso 2
 	//int tid = blockIdx.y;
@@ -50,19 +50,18 @@ __global__ void add(float *a, float *b, float *c) {
 	//c[tid] = a[tid] + b[tid];
 
 	// Caso 4 y 5
-	//int tid = (blockIdx.x*blockDim.x)+ threadIdx.x; 
-	//if (tid < length) 
-	//	c[tid] = a[tid] + b[tid];  
+	int tid = ( blockIdx.x * blockDim.x ) + threadIdx.x; 
+	if ( tid < length ) c[tid] = a[tid] + b[tid];  
 
 	// Caso 6
 	//int tid = (blockIdx.x*blockDim.x*elemxHilo) +
 	//	(threadIdx.x*elemxHilo);
-	int tid = ((blockIdx.x*blockDim.x) + threadIdx.x) *
-		elemxHilo;
-	for (int i = 0; i < elemxHilo; i++) {
-		if ((tid + i) < length)
-			c[tid + i] = a[tid + i] + b[tid + i];
-	}
+	// int tid = ((blockIdx.x*blockDim.x) + threadIdx.x) *
+	// 	elemxHilo;
+	// for (int i = 0; i < elemxHilo; i++) {
+	// 	if ((tid + i) < length)
+	// 		c[tid + i] = a[tid + i] + b[tid + i];
+	// }
 }
 
 float comparar(float *var1, float *var2, int *numDifer) {
@@ -144,26 +143,26 @@ int main( int argc , char* argv[] )
 	printf( "- Operations on the CPU takes %.3f ms.\n" ,
 		( ( ( float ) timer1 ) / CLOCKS_PER_SEC ) * 1000 );
 	// Copy memory from host to device
-	// destination , source , data size , copy direction
+	// Destination , Source , Data Size , Copy Direction
 	cudaMemcpy( dev_a , a , length * sizeof( float ) , cudaMemcpyHostToDevice );
 	cudaMemcpy( dev_b , b , length * sizeof( float ) , cudaMemcpyHostToDevice );
 
 	clock_t timer2 = clock();
 	// Caso 1
-	//dim3 dimGrid(length);
-	//dim3 dimBlock(1);
+	// dim3 dimGrid( length );
+	// dim3 dimBlock( 1 );
 
 	// Caso 2
-	//dim3 dimGrid(1, length);
-	//dim3 dimBlock(1);
+	//dim3 dimGrid( 1 , length );
+	//dim3 dimBlock( 1 );
 
 	//Caso 3 
-	//dim3 dimGrid (1);
-	//dim3 dimBlock(length);
+	//dim3 dimGrid( 1 );
+	//dim3 dimBlock( length );
 
 	//Caso 4
-	//dim3 dimGrid(divEntera(length, maxHilos));
-	//dim3 dimBlock(maxHilos);
+	dim3 dimGrid(divEntera( length , maxHilos ) );
+	dim3 dimBlock( maxHilos );
 
 	//Caso 5
 	//int numBloques = divEntera(length, maxHilos);
@@ -172,20 +171,21 @@ int main( int argc , char* argv[] )
 	//dim3 dimBlock(numHilos);
 
 	//Caso 6
-	int numBloques = divEntera(length, maxHilos*elemxHilo);
-	dim3 dimGrid(numBloques);
-	dim3 dimBlock(maxHilos);
+	// int numBloques = divEntera(length, maxHilos*elemxHilo);
+	// dim3 dimGrid(numBloques);
+	// dim3 dimBlock(maxHilos);
 
 	cudaError_t cudaStatus;
-	add << <dimGrid, dimBlock >> >(dev_a, dev_b, dev_c);
+	add <<< dimGrid , dimBlock >>> ( dev_a , dev_b , dev_c );
 	cudaStatus = cudaGetLastError();
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "Kernel launch FAILED: %s\n",
 			cudaGetErrorString(cudaStatus));
 	}
 	timer2 = clock() - timer2;
-	
-	printf("Operacion en Device toma %10.3f ms.\n", (((float)timer2) / CLOCKS_PER_SEC) * 1000);
+
+	printf( "- Operation on Device takes %.3f ms.\n" ,
+		( ( ( float ) timer2 ) / CLOCKS_PER_SEC ) * 1000 );
 
 	printf("Configuracion de ejecucion: \n");
 	printf("Grid [%d, %d, %d] Bloque [%d, %d, %d]\n",
