@@ -97,8 +97,10 @@ int divEntera(int n, int m) {
 	return valor;
 }
 
-void addCPU(float *a, float *b, float *c) {
-	for (int i = 0; i<length; i++) {
+void addCPU( float *a , float *b , float *c )
+{
+	for( int i = 0 ; i < length ; ++i )
+	{
 		c[i] = a[i] + b[i];
 	}
 }
@@ -133,23 +135,20 @@ int main( int argc , char* argv[] )
 		b[i] = ( ( ( float ) rand() / ( float ) RAND_MAX ) * 100 ) - 20;
 	}
 
-	printf("Suma de vector con %d elementos.\n", length);
+	printf( "- Array addition with %d elements.\n" , length );
+
 	clock_t timer1 = clock();
-
-	addCPU(a, b, cpu_c);
-
+	addCPU( a , b , cpu_c );
 	timer1 = clock() - timer1;
-	printf("Operacion en CPU toma %10.3f ms.\n", (((float)timer1) / CLOCKS_PER_SEC) * 1000);
 
-	//copy arrays from host to device
-	// (destino, origen, tamaño datos, dirección de copiado)
-	cudaMemcpy(dev_a, a, length * sizeof(float),
-		cudaMemcpyHostToDevice);
-	cudaMemcpy(dev_b, b, length * sizeof(float),
-		cudaMemcpyHostToDevice);
+	printf( "- Operations on the CPU takes %.3f ms.\n" ,
+		( ( ( float ) timer1 ) / CLOCKS_PER_SEC ) * 1000 );
+	// Copy memory from host to device
+	// destination , source , data size , copy direction
+	cudaMemcpy( dev_a , a , length * sizeof( float ) , cudaMemcpyHostToDevice );
+	cudaMemcpy( dev_b , b , length * sizeof( float ) , cudaMemcpyHostToDevice );
 
 	clock_t timer2 = clock();
-
 	// Caso 1
 	//dim3 dimGrid(length);
 	//dim3 dimBlock(1);
@@ -184,8 +183,8 @@ int main( int argc , char* argv[] )
 		fprintf(stderr, "Kernel launch FAILED: %s\n",
 			cudaGetErrorString(cudaStatus));
 	}
-
 	timer2 = clock() - timer2;
+	
 	printf("Operacion en Device toma %10.3f ms.\n", (((float)timer2) / CLOCKS_PER_SEC) * 1000);
 
 	printf("Configuracion de ejecucion: \n");
