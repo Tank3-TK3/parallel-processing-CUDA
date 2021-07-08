@@ -11,17 +11,29 @@
 //////////////////////////////////////////////////
 //            Program 06 Array Sum              //
 //////////////////////////////////////////////////
+// C++
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
-
+// CUDA C / C++
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
-#define length 100 //63000
+#define length 100
 #define epsilon float(0.0000001)
-#define elemxHilo 5 // caso 6
+#define elemxHilo 5
+
+__host__ int printDevProp()
+{
+	cudaDeviceProp devProp;
+	cudaGetDeviceProperties( &devProp , 0 );
+	printf( "##################################################\n" );
+	printf( "- Device Name: %s\n" , devProp.name );
+	printf( "- Maximum number of threads per block: %d\n" , devProp.maxThreadsPerBlock );
+	printf( "##################################################\n" );
+	return devProp.maxThreadsPerBlock;
+}
 
 __global__ void add(float *a, float *b, float *c) {
 
@@ -93,36 +105,32 @@ void addCPU(float *a, float *b, float *c) {
 
 int main( int argc , char* argv[] )
 {
-	float a[length], b[length], gpu_c[length];
+	float a[length] , b[length] , gpu_c[length];
 	float cpu_c[length];
-	float *dev_a, *dev_b, *dev_c;
+	float *dev_a , *dev_b , *dev_c;
+	float diferencia = 0;
+	int nDiferentes = 0;
 
-	memset(gpu_c, 0, length * sizeof(float));
-	memset(cpu_c, 0, length * sizeof(float));
+	memset( gpu_c , 0 , length * sizeof( float ) );
+	memset( cpu_c , 0 , length * sizeof( float ) );
 
-	cudaSetDevice(0);
+	cudaSetDevice( 0 );
 
-	// Obtiene las propiedades de la primer tarjeta
-	cudaDeviceProp devProp;
-	cudaGetDeviceProperties(&devProp, 0);
-	int maxHilos = devProp.maxThreadsPerBlock;
+	int maxHilos = printDevProp(); // Get device properties
 
-	printf("Propiedad de la tarjeta de video\n");
-	printf("Hilos maximos por bloque: %d\n", maxHilos);
-	printf("======================================================================\n");
+	// Allocate memory on device
+	cudaMalloc( ( void** ) &dev_a, length * sizeof( float ) );
+	cudaMalloc( ( void** ) &dev_b, length * sizeof( float ) );
+	cudaMalloc( ( void** ) &dev_c, length * sizeof( float ) );
+	cudaMemset( dev_c , 0 , length * sizeof( float ) );
 
-	// allocate memory - GPU
-	cudaMalloc((void**)&dev_a, length * sizeof(float));
-	cudaMalloc((void**)&dev_b, length * sizeof(float));
-	cudaMalloc((void**)&dev_c, length * sizeof(float));
-	cudaMemset(dev_c, 0, length * sizeof(float));
-
-	srand((unsigned)time(NULL)); // semilla de aleatorios dinamica
-
-								 //fill arrays a and b on the CPU
-	for (int i = 0; i<length; i++) {
-		a[i] = (((float)rand() / (float)RAND_MAX) * 100) - 20;
-		b[i] = (((float)rand() / (float)RAND_MAX) * 100) - 20;
+	srand( ( unsigned ) time( NULL ) ); // Dynamic random seed
+	
+	// Fill arrays a and b on the CPU
+	for( int i = 0 ; i < length ; ++i )
+	{
+		a[i] = ( ( ( float ) rand() / ( float ) RAND_MAX ) * 100 ) - 20;
+		b[i] = ( ( ( float ) rand() / ( float ) RAND_MAX ) * 100 ) - 20;
 	}
 
 	printf("Suma de vector con %d elementos.\n", length);
@@ -193,18 +201,16 @@ int main( int argc , char* argv[] )
 
 	imprimir(a, b, cpu_c, gpu_c);
 
-	float diferencia = 0;
-	int nDiferentes = 0;
-
 	diferencia = comparar(gpu_c, cpu_c, &nDiferentes);
 
-	printf("Elementos diferentes %d (%.3f %%) Con valor de %.20f\n", nDiferentes, ((nDiferentes / float(length)) * 100), diferencia);
-	printf("======================================================================\n");
+	printf( "Elementos diferentes %d (%.3f %%) Con valor de %.20f\n" ,
+		nDiferentes , ( ( nDiferentes / float( length ) ) * 100 ) , diferencia );
+	printf( "##################################################\n" );
 
 	//free memory - GPU
-	cudaFree(dev_a);
-	cudaFree(dev_b);
-	cudaFree(dev_c);
+	cudaFree( dev_a );
+	cudaFree( dev_b );
+	cudaFree( dev_c );
 
 	system( "pause" );
 	return 0;
