@@ -2,7 +2,7 @@
 //              Program 02 Arrays               //
 //////////////////////////////////////////////////
 #include <iostream>
-#include <time.h>
+#include <ctime>
 
 using namespace std;
 
