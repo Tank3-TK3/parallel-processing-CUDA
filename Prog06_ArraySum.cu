@@ -64,7 +64,7 @@ __global__ void add( float *a , float *b , float *c )
 	// }
 }
 
-float comparar(float *var1, float *var2, int *numDifer) {
+float comparar( float *var1 , float *var2 , int *numDifer ) {
 	float diferencia = 0;
 	float difActual = 0;
 	int cont = 0;
@@ -165,33 +165,32 @@ int main( int argc , char* argv[] )
 	dim3 dimBlock( maxHilos );
 
 	//Caso 5
-	//int numBloques = divEntera(length, maxHilos);
-	//int numHilos = divEntera(length, numBloques);
-	//dim3 dimGrid(numBloques);
-	//dim3 dimBlock(numHilos);
+	//int numBloques = divEntera( length , maxHilos );
+	//int numHilos = divEntera( length , numBloques );
+	//dim3 dimGrid( numBloques );
+	//dim3 dimBlock( numHilos );
 
 	//Caso 6
-	// int numBloques = divEntera(length, maxHilos*elemxHilo);
-	// dim3 dimGrid(numBloques);
-	// dim3 dimBlock(maxHilos);
+	// int numBloques = divEntera( length , maxHilos * elemxHilo );
+	// dim3 dimGrid( numBloques );
+	// dim3 dimBlock( maxHilos );
 
 	cudaError_t cudaStatus;
 	add <<< dimGrid , dimBlock >>> ( dev_a , dev_b , dev_c );
 	cudaStatus = cudaGetLastError();
-	if (cudaStatus != cudaSuccess) {
-		fprintf(stderr, "Kernel launch FAILED: %s\n",
-			cudaGetErrorString(cudaStatus));
+	if( cudaStatus != cudaSuccess )
+	{
+		fprintf( stderr , "Kernel launch FAILED: %s\n" , cudaGetErrorString( cudaStatus ) );
 	}
 	timer2 = clock() - timer2;
 
 	printf( "- Operation on Device takes %.3f ms.\n" ,
 		( ( ( float ) timer2 ) / CLOCKS_PER_SEC ) * 1000 );
 
-	printf("Configuracion de ejecucion: \n");
-	printf("Grid [%d, %d, %d] Bloque [%d, %d, %d]\n",
-		dimGrid.x, dimGrid.y, dimGrid.z,
-		dimBlock.x, dimBlock.y, dimBlock.z);
-	printf("Elementos por hilo: %d\n", elemxHilo);
+	printf( "Configuracion de ejecucion: \n" );
+	printf( "Grid [%d, %d, %d] Bloque [%d, %d, %d]\n" ,
+		dimGrid.x , dimGrid.y , dimGrid.z , dimBlock.x , dimBlock.y , dimBlock.z );
+	printf( "Elementos por hilo: %d\n" , elemxHilo );
 
 	//copy results back - device to host
 	// (destino, origen, tamaño datos, dirección de copiado)
