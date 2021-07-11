@@ -149,31 +149,31 @@ int main(int argc, char* argv[])
 
 	clock_t timer2 = clock();
 	// Caso 1
-	// dim3 dimGrid( length );
-	// dim3 dimBlock( 1 );
+	// dim3 dimGrid(length);
+	// dim3 dimBlock(1);
 
 	// Caso 2
-	//dim3 dimGrid( 1 , length );
-	//dim3 dimBlock( 1 );
+	//dim3 dimGrid(1, length);
+	//dim3 dimBlock(1);
 
 	//Caso 3 
-	//dim3 dimGrid( 1 );
-	//dim3 dimBlock( length );
+	//dim3 dimGrid(1);
+	//dim3 dimBlock(length);
 
 	//Caso 4
 	dim3 dimGrid(divEntera(length, maxHilos));
 	dim3 dimBlock(maxHilos);
 
 	//Caso 5
-	//int numBloques = divEntera( length , maxHilos );
-	//int numHilos = divEntera( length , numBloques );
-	//dim3 dimGrid( numBloques );
-	//dim3 dimBlock( numHilos );
+	//int numBloques = divEntera(length, maxHilos);
+	//int numHilos = divEntera(length, numBloques);
+	//dim3 dimGrid(numBloques);
+	//dim3 dimBlock(numHilos);
 
 	//Caso 6
-	// int numBloques = divEntera( length , maxHilos * elemxHilo );
-	// dim3 dimGrid( numBloques );
-	// dim3 dimBlock( maxHilos );
+	// int numBloques = divEntera(length, maxHilos*elemxHilo);
+	// dim3 dimGrid(numBloques);
+	// dim3 dimBlock(maxHilos);
 
 	cudaError_t cudaStatus;
 	add <<<dimGrid,dimBlock>>>(dev_a, dev_b, dev_c);
