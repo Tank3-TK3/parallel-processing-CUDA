@@ -1,8 +1,10 @@
 //////////////////////////////////////////////////
 //           Program 05 Hello World             //
 //////////////////////////////////////////////////
+// C++
 #include <cstdio>
 #include <ctime>
+// CUDA C / C++
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
