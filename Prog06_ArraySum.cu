@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
+#include <iostream>
 // CUDA C / C++
 #include <cuda.h>
 #include <cuda_runtime.h>
@@ -174,7 +175,7 @@ int main(int argc, char* argv[])
 	// dim3 dimBlock(maxHilos);
 
 	cudaError_t cudaStatus;
-	add <<<dimGrid,dimBlock>>>(dev_a, dev_b, dev_c);
+	add<<<dimGrid, dimBlock>>>(dev_a, dev_b, dev_c);
 	cudaStatus = cudaGetLastError();
 	if (cudaStatus != cudaSuccess)
 	{
