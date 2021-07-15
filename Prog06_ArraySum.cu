@@ -183,12 +183,10 @@ int main(int argc, char* argv[])
 	}
 	timer2 = clock() - timer2;
 
-	printf("- Operation on Device takes %.3f ms.\n",
-		(((float)timer2) / CLOCKS_PER_SEC) * 1000);
+	printf("- Operation on Device takes %.3f ms.\n", (((float)timer2) / CLOCKS_PER_SEC) * 1000);
 
 	printf("Configuracion de ejecucion: \n");
-	printf("Grid [%d, %d, %d] Bloque [%d, %d, %d]\n",
-		dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
+	printf("Grid [%d, %d, %d] Bloque [%d, %d, %d]\n", dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
 	printf("Elementos por hilo: %d\n", elemxHilo);
 
 	//copy results back - device to host
