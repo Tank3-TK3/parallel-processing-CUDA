@@ -63,11 +63,13 @@ __global__ void add(float* a, float* b, float* c)
 	// }
 }
 
-float comparar(float* var1, float* var2, int* numDifer) {
+float comparar(float* var1, float* var2, int* numDifer) 
+{
 	float diferencia = 0;
 	float difActual = 0;
 	int cont = 0;
-	for (int i = 0; i < length; i++) {
+	for (int i = 0; i < length; i++) 
+	{
 		difActual = abs(var1[i] - var2[i]);
 		diferencia += difActual;
 		if (difActual > epsilon)
@@ -78,15 +80,18 @@ float comparar(float* var1, float* var2, int* numDifer) {
 }
 
 void imprimir(float* var1, float* var2,
-	float* result1, float* result2) {
+	float* result1, float* result2) 
+{
 	//display results
-	for (int i = 0; i < length; i++) {
+	for (int i = 0; i < length; i++) 
+	{
 		printf("%5d. %10.3f + %10.3f = CPU %10.3f   GPU %10.3f\n",
 			i + 1, var1[i], var2[i], result1[i], result2[i]);
 	}
 }
 
-int divEntera(int n, int m) {
+int divEntera(int n, int m) 
+{
 	int valor = 0;
 	if ((n % m) == 0)
 		valor = n / m;
