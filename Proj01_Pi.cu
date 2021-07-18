@@ -7,11 +7,11 @@
 #include <ctime>
 #include <cmath>
 // CUDA C / C++
-#include <cuda.h>
-#include <cuda_runtime.h>
 #include <device_launch_parameters.h>
+#include <cuda_runtime.h>
+#include <cuda.h>
 
-const double iterations = 94906264; /*MAX: 94906264*/
+const double iterations = 90000000; /*MAX: 94906264*/
 
 __host__ double piCPU()
 {
