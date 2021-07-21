@@ -38,7 +38,7 @@ __host__ double piCPU()
 	timer1 = clock() - timer1;
 	double pi = sqrt(sum * 6);
 	printf(" - The value of PI in CPU is: %.8lf\n", pi); /*MAX DEC: 51*/
-	printf(" - Total CPU time: %f ms.\n", ( ( ( ( double ) timer1 ) / CLOCKS_PER_SEC ) * 1000.0 ) );
+	printf(" - Total CPU time: %f ms.\n", ((((double)timer1) / CLOCKS_PER_SEC) * 1000.0));
 	printf("==================================================\n");
 	return pi;
 }
@@ -47,12 +47,12 @@ __host__ int printMenuOpt()
 {
 	int opt = ' ';
 	printf(" - Write the number of the case you want to run:\n");
-	printf("\t1) Case01 - 1 Block with m Thread.\n");
-	printf("\t2) Case02 - x Blocks with 1 Thread each.\n");
-	printf("\t3) Case03 - x Blocks with m Threads each.\n");
-	printf("\t4) Case04 - x * y Blocks with 1 Thread each.\n");
-	printf("\t5) Case05 - 1 Block with m * n Threads each.\n");
-	printf("\t6) Case06 - x * y Blocks with m * n Threads each.\n");
+	printf("   1) Case01 - 1 Block with m Thread.\n");
+	printf("   2) Case02 - x Blocks with 1 Thread each.\n");
+	printf("   3) Case03 - x Blocks with m Threads each.\n");
+	printf("   4) Case04 - x * y Blocks with 1 Thread each.\n");
+	printf("   5) Case05 - 1 Block with m * n Threads each.\n");
+	printf("   6) Case06 - x * y Blocks with m * n Threads each.\n");
 	printf("> ");
 	scanf("%d", &opt);
 	return opt;
@@ -61,8 +61,8 @@ __host__ int printMenuOpt()
 __global__ void sum01GPU01(double* arrayGPU, double iter)
 {
 	int tid = threadIdx.x;
-	double segmento = ((iter / 1024) * tid) + 1;
-	for (double i = segmento; i < (segmento + (iter / 1024)) - 1; ++i)
+	double segment = ((iter / 1024) * tid) + 1;
+	for (double i = segment; i < (segment + (iter / 1024)) - 1; ++i)
 	{
 		arrayGPU[tid] = arrayGPU[tid] + (1 / (i * i));
 	}
@@ -107,7 +107,7 @@ __host__ void printStats(clock_t timer, dim3 dimGrid, dim3 dimBlock)
 	printf(" - Total Threads: %d\n",
 		dimGrid.x * dimGrid.y * dimGrid.z * dimBlock.x * dimBlock.y * dimBlock.z);
 	printf(" - Configuracion de ejecucion: \n");
-	printf("\t+ Grid [%d, %d, %d] Bloque [%d, %d, %d]\n",
+	printf("   + Grid [%d, %d, %d] Bloque [%d, %d, %d]\n",
 		dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
 }
 
@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 
 	int maxHilos = printDevProp();
 
-	switch(printMenuOpt())
+	switch (printMenuOpt())
 	{
 	case 1: // Case01 - 1 Block with m Thread.
 		printf("==================================================\n");
@@ -139,11 +139,11 @@ int main(int argc, char* argv[])
 		dimGrid = { 1 , 1 , 1 };
 		dimBlock = { 1024 , 1 , 1 };
 		timer = clock();
-		sum01GPU01<<<dimGrid, dimBlock>>>(arrayGPU, iterations);
+		sum01GPU01 << <dimGrid, dimBlock >> > (arrayGPU, iterations);
 		cudaDeviceSynchronize();
 		dimBlock = { 1 , 1 , 1 };
 		cudaMemcpy(numpiGPUCPU, numpiCPUGPU, sizeof(double), cudaMemcpyHostToDevice);
-		sum02GPU01<<<dimGrid, dimBlock >>>(arrayGPU, numpiGPUCPU);
+		sum02GPU01 << <dimGrid, dimBlock >> > (arrayGPU, numpiGPUCPU);
 		cudaDeviceSynchronize();
 		dimBlock = { 1024 , 1 , 1 };
 		timer = clock() - timer;
@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
 		dimGrid = { 1024 , 1 , 1 };
 		dimBlock = { 1 , 1 , 1 };
 		timer = clock();
-		piGPU02<<<dimGrid, dimBlock>>>();
+		piGPU02 << <dimGrid, dimBlock >> > ();
 		timer = clock() - timer;
 		printStats(timer, dimGrid, dimBlock);
 		printf("==================================================\n");
@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
 		dimGrid = { 1024 , 1 , 1 };
 		dimBlock = { 1024 , 1 , 1 };
 		timer = clock();
-		piGPU03<<<dimGrid, dimBlock>>>();
+		piGPU03 << <dimGrid, dimBlock >> > ();
 		timer = clock() - timer;
 		printStats(timer, dimGrid, dimBlock);
 		printf("==================================================\n");
@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
 		dimGrid = { 1024 , 1024 , 1 };
 		dimBlock = { 1 , 1 , 1 };
 		timer = clock();
-		piGPU04<<<dimGrid, dimBlock>>>();
+		piGPU04 << <dimGrid, dimBlock >> > ();
 		timer = clock() - timer;
 		printStats(timer, dimGrid, dimBlock);
 		printf("==================================================\n");
@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
 		dimGrid = { 1 , 1 , 1 };
 		dimBlock = { 30 , 30 , 1 };
 		timer = clock();
-		piGPU05<<<dimGrid, dimBlock>>>();
+		piGPU05 << <dimGrid, dimBlock >> > ();
 		timer = clock() - timer;
 		printStats(timer, dimGrid, dimBlock);
 		printf("==================================================\n");
@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
 		dimGrid = { 1024 , 1024 , 1 };
 		dimBlock = { 30 , 30 , 1 };
 		timer = clock();
-		piGPU06<<<dimGrid, dimBlock>>>();
+		piGPU06 << <dimGrid, dimBlock >> > ();
 		timer = clock() - timer;
 		printStats(timer, dimGrid, dimBlock);
 		printf("==================================================\n");
