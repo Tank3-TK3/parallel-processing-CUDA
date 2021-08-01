@@ -11,99 +11,27 @@
 #include <cuda_runtime.h>
 #include <cuda.h>
 
-const double iterations = 90000000; /*MAX: 94906264*/
+const double iterations = 100000000; /*MAX: 94906264*/
 
 __host__ int printDevProp()
 {
 	cudaDeviceProp devProp;
 	cudaGetDeviceProperties(&devProp, 0);
+	cudaDeviceProp features; //Propiedades de la tarjeta
+	cudaGetDeviceProperties(&features, 0);
 	printf("==================================================\n");
 	printf(" >>>>>>> PI Calculation with CPU and GPU <<<<<<<\n");
 	printf(" - Device Name: %s\n", devProp.name);
 	printf(" - Maximum number of threads per block: %d\n", devProp.maxThreadsPerBlock);
 	printf(" - Number of iterations: %.1lf\n", iterations);
+	printf(" - The available shared memory is: %dKB\n", (int)(features.sharedMemPerBlock / 1024));
 	printf("==================================================\n");
 	return devProp.maxThreadsPerBlock;
 }
 
-__host__ double piCPU()
-{
-	printf("\t\t<<<<< CPU >>>>>\n");
-	double sum = 0;
-	clock_t timer1 = clock();
-	for (double i = 1; i < iterations; ++i)
-	{
-		sum += (1 / (i * i));
-	}
-	timer1 = clock() - timer1;
-	double pi = sqrt(sum * 6);
-	printf(" - The value of PI in CPU is: %.8lf\n", pi); /*MAX DEC: 51*/
-	printf(" - Total CPU time: %f ms.\n", ((((double)timer1) / CLOCKS_PER_SEC) * 1000.0));
-	printf("==================================================\n");
-	return pi;
-}
-
-__host__ int printMenuOpt()
-{
-	int opt = ' ';
-	printf(" - Write the number of the case you want to run:\n");
-	printf("   1) Case01 - 1 Block with m Thread.\n");
-	printf("   2) Case02 - x Blocks with 1 Thread each.\n");
-	printf("   3) Case03 - x Blocks with m Threads each.\n");
-	printf("   4) Case04 - x * y Blocks with 1 Thread each.\n");
-	printf("   5) Case05 - 1 Block with m * n Threads each.\n");
-	printf("   6) Case06 - x * y Blocks with m * n Threads each.\n");
-	printf("> ");
-	scanf("%d", &opt);
-	return opt;
-}
-
-__global__ void sum01GPU01(double* arrayGPU, double iter)
-{
-	int tid = threadIdx.x;
-	double segment = ((iter / 1024) * tid) + 1;
-	for (double i = segment; i < (segment + (iter / 1024)) - 1; ++i)
-	{
-		arrayGPU[tid] = arrayGPU[tid] + (1 / (i * i));
-	}
-}
-
-__global__ void sum02GPU01(double* arrayGPU, double* numpiGPUCPU)
-{
-	for (int i = 1; i < 1024; ++i)
-	{
-		arrayGPU[0] = arrayGPU[0] + arrayGPU[i];
-	}
-	numpiGPUCPU[0] = sqrt(arrayGPU[0] * 6);
-}
-
-__global__ void piGPU02()
-{
-
-}
-
-__global__ void piGPU03()
-{
-
-}
-
-__global__ void piGPU04()
-{
-
-}
-
-__global__ void piGPU05()
-{
-
-}
-
-__global__ void piGPU06()
-{
-
-}
-
 __host__ void printStats(clock_t timer, dim3 dimGrid, dim3 dimBlock)
 {
+	printf(" - Total GPU time: %f ms.\n", ((((float)timer) / CLOCKS_PER_SEC) * 1000.0));
 	printf(" - Total Threads: %d\n",
 		dimGrid.x * dimGrid.y * dimGrid.z * dimBlock.x * dimBlock.y * dimBlock.z);
 	printf(" - Configuracion de ejecucion: \n");
@@ -111,111 +39,133 @@ __host__ void printStats(clock_t timer, dim3 dimGrid, dim3 dimBlock)
 		dimGrid.x, dimGrid.y, dimGrid.z, dimBlock.x, dimBlock.y, dimBlock.z);
 }
 
+__host__ double piCPU()
+{
+	double sum = 0;
+	for (double i = 1; i < iterations; ++i)
+	{
+		sum += (1 / (i * i));
+	}
+	return sqrt(sum * 6);
+}
+
+__host__ int intDivision(double n, double m)
+{
+	int value = 0;
+	if (((int)n % (int)m) == 0)
+		value = (n / m);
+	else
+		value = (n / m) + 1;
+	return value;
+}
+
+__global__ void crazyDivisions(double* ti, double iter)
+{
+	int tid = (blockIdx.x * blockDim.x) + threadIdx.x;
+	if ((tid) <= (int)iter - 1)
+	{
+		ti[tid] = (double)1 / (double)(((double)tid + (double)1) * ((double)tid + (double)1));
+	}
+}
+
+__global__ void crazySums(double* ti01, double* ti02, double iter)
+{
+	int tid = (blockIdx.x * blockDim.x) + threadIdx.x;
+	if ((tid * 2) <= (int)iter)
+	{
+		ti02[tid] = ti01[(tid * 2)] + ti01[(tid * 2) + 1];
+	}
+}
+
+__global__ void crazyPI(double* ti, double* pi)
+{
+
+	pi[0] = sqrt(ti[0] * 6);
+}
+
 int main(int argc, char* argv[])
 {
-	clock_t timer;
-	dim3 dimGrid;
-	dim3 dimBlock;
-	cudaError_t cudaStatus;
-	double* numpiCPUGPU[1];
-	double* numpiGPUCPU;
+	int maxThreads, numBlocks;
+	double numpiCPU;
+	double* totalItems01, * totalItems02, * numpiGPU;
+	clock_t timer1, timer2;
 
 	cudaFree(0);
 	cudaSetDevice(0);
 
-	int maxHilos = printDevProp();
+	maxThreads = printDevProp();
 
-	switch (printMenuOpt())
+	printf("\t\t<<<<< CPU >>>>>\n");
+	timer1 = clock();
+
+	numpiCPU = piCPU();
+
+	timer1 = clock() - timer1;
+
+	printf(" - The value of PI in CPU is: %.9lf\n", numpiCPU); /*MAX DEC: 51*/
+	printf(" - Total CPU time: %f ms.\n", ((((double)timer1) / CLOCKS_PER_SEC) * 1000.0));
+	printf("==================================================\n");
+
+	printf("\t\t<<<<< GPU >>>>>\n");
+
+	cudaMalloc((void**)&totalItems01, iterations * sizeof(double));
+	cudaMalloc((void**)&totalItems02, iterations * sizeof(double));
+	cudaMalloc((void**)&numpiGPU, sizeof(double));
+
+	timer2 = clock();
+
+	numBlocks = intDivision(iterations, maxThreads);
+	dim3 dimGrid(numBlocks);
+	dim3 dimBlock(maxThreads);
+
+	crazyDivisions << <dimGrid, dimBlock >> > (totalItems01, iterations);
+	cudaDeviceSynchronize();
+
+	dim3 dimGrid2(ceil((double)numBlocks / (double)2));
+	bool flag = true;
+	double iter = iterations;
+	unsigned int blocks = 0;
+	while (iter != 1)
 	{
-	case 1: // Case01 - 1 Block with m Thread.
-		printf("==================================================\n");
-		printf("\t\t<<<<< GPU >>>>>\n");
-		double* arrayCPU[87891];
-		double* arrayGPU;
-		cudaMalloc((void**)&arrayGPU, (87891) * sizeof(double));
-		cudaMalloc((void**)&numpiGPUCPU, 1 * sizeof(double));
-		cudaMemset(arrayGPU, 0, (87891) * sizeof(double));
-		cudaMemcpy(arrayGPU, arrayCPU, iterations * sizeof(double), cudaMemcpyHostToDevice);
-		dimGrid = { 1 , 1 , 1 };
-		dimBlock = { 1024 , 1 , 1 };
-		timer = clock();
-		sum01GPU01 << <dimGrid, dimBlock >> > (arrayGPU, iterations);
+		if (flag)
+		{
+			crazySums << <dimGrid2, dimBlock >> > (totalItems01, totalItems02, iter);
+			flag = false;
+		}
+		else
+		{
+			crazySums << <dimGrid2, dimBlock >> > (totalItems02, totalItems01, iter);
+			flag = true;
+		}
 		cudaDeviceSynchronize();
-		dimBlock = { 1 , 1 , 1 };
-		cudaMemcpy(numpiGPUCPU, numpiCPUGPU, sizeof(double), cudaMemcpyHostToDevice);
-		sum02GPU01 << <dimGrid, dimBlock >> > (arrayGPU, numpiGPUCPU);
-		cudaDeviceSynchronize();
-		dimBlock = { 1024 , 1 , 1 };
-		timer = clock() - timer;
-		cudaMemcpy(numpiCPUGPU, numpiGPUCPU, sizeof(double), cudaMemcpyDeviceToHost);
-		printf(" - The value of PI in GPU is: %.8lf\n", numpiCPUGPU[0]); /*MAX DEC: 51*/
-		printf(" - Total GPU time: %f ms.\n", ((((double)timer) / CLOCKS_PER_SEC) * 1000.0));
-		printStats(timer, dimGrid, dimBlock);
-		printf("==================================================\n");
-		cudaFree(arrayGPU);
-		break;
-	case 2: // Case02 - x Blocks with 1 Thread each.
-		printf("==================================================\n");
-		printf("\t\t<<<<< GPU >>>>>\n");
-		dimGrid = { 1024 , 1 , 1 };
-		dimBlock = { 1 , 1 , 1 };
-		timer = clock();
-		piGPU02 << <dimGrid, dimBlock >> > ();
-		timer = clock() - timer;
-		printStats(timer, dimGrid, dimBlock);
-		printf("==================================================\n");
-		break;
-	case 3: // Case03 - x Blocks with m Threads each.
-		printf("==================================================\n");
-		printf("\t\t<<<<< GPU >>>>>\n");
-		dimGrid = { 1024 , 1 , 1 };
-		dimBlock = { 1024 , 1 , 1 };
-		timer = clock();
-		piGPU03 << <dimGrid, dimBlock >> > ();
-		timer = clock() - timer;
-		printStats(timer, dimGrid, dimBlock);
-		printf("==================================================\n");
-		break;
-	case 4: // Case04 - x * y Blocks with 1 Thread each.
-		printf("==================================================\n");
-		printf("\t\t<<<<< GPU >>>>>\n");
-		dimGrid = { 1024 , 1024 , 1 };
-		dimBlock = { 1 , 1 , 1 };
-		timer = clock();
-		piGPU04 << <dimGrid, dimBlock >> > ();
-		timer = clock() - timer;
-		printStats(timer, dimGrid, dimBlock);
-		printf("==================================================\n");
-		break;
-	case 5: // Case05 - 1 Block with m * n Threads each.
-		printf("==================================================\n");
-		printf("\t\t<<<<< GPU >>>>>\n");
-		dimGrid = { 1 , 1 , 1 };
-		dimBlock = { 30 , 30 , 1 };
-		timer = clock();
-		piGPU05 << <dimGrid, dimBlock >> > ();
-		timer = clock() - timer;
-		printStats(timer, dimGrid, dimBlock);
-		printf("==================================================\n");
-		break;
-	case 6: // Case06 - x * y Blocks with m * n Threads each.
-		printf("==================================================\n");
-		printf("\t\t<<<<< GPU >>>>>\n");
-		dimGrid = { 1024 , 1024 , 1 };
-		dimBlock = { 30 , 30 , 1 };
-		timer = clock();
-		piGPU06 << <dimGrid, dimBlock >> > ();
-		timer = clock() - timer;
-		printStats(timer, dimGrid, dimBlock);
-		printf("==================================================\n");
-		break;
-	default:
-		printf(">>> INVALID OPTION <<<\n");
-		return 0;
-		break;
+		iter = ceil(iter / 2);
+		numBlocks = ceil((double)numBlocks / (double)2);
+		if (numBlocks == 0)
+			dimGrid2 = { (unsigned int)numBlocks + 1 };
+		else
+			dimGrid2 = { (unsigned int)numBlocks };
 	}
 
-	double numpiCPU = piCPU();
+	if (flag)
+		crazyPI << <1, 1 >> > (totalItems02, numpiGPU);
+	else
+		crazyPI << <1, 1 >> > (totalItems01, numpiGPU);
+
+
+	double pipi = 0;
+	cudaMemcpy(&pipi, numpiGPU, sizeof(double), cudaMemcpyDeviceToHost);
+
+	cudaDeviceSynchronize();
+	timer2 = clock() - timer2;
+
+	printf(" - The value of PI in GPU is: %.9lf\n", pipi); /*MAX DEC: 51*/
+	printStats(timer2, dimGrid, dimBlock);
+	printf("==================================================\n");
+
+	//free memory - GPU
+	cudaFree(totalItems01);
+	cudaFree(totalItems02);
+	cudaFree(numpiGPU);
 
 	system("pause");
 	return 0;
