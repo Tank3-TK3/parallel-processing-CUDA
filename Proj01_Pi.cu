@@ -11,20 +11,17 @@
 #include <cuda_runtime.h>
 #include <cuda.h>
 
-const double iterations = 100000000; /*MAX: 94906264*/
+const double iterations = 204800000; /*MAX: 94906264*/
 
 __host__ int printDevProp()
 {
 	cudaDeviceProp devProp;
 	cudaGetDeviceProperties(&devProp, 0);
-	cudaDeviceProp features; //Propiedades de la tarjeta
-	cudaGetDeviceProperties(&features, 0);
 	printf("==================================================\n");
 	printf(" >>>>>>> PI Calculation with CPU and GPU <<<<<<<\n");
 	printf(" - Device Name: %s\n", devProp.name);
 	printf(" - Maximum number of threads per block: %d\n", devProp.maxThreadsPerBlock);
 	printf(" - Number of iterations: %.1lf\n", iterations);
-	printf(" - The available shared memory is: %dKB\n", (int)(features.sharedMemPerBlock / 1024));
 	printf("==================================================\n");
 	return devProp.maxThreadsPerBlock;
 }
